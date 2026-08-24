@@ -1,0 +1,22 @@
+appId: com.jarvis.assistant
+productName: JARVIS
+copyright: Copyright © 2026 Jarvis Team
+directories:
+  output: release
+  buildResources: build
+files:
+  - dist
+  - dist-electron
+  - package.json
+asar: true
+mac:
+  target: [dmg, zip]
+  category: public.app-category.productivity
+  hardenedRuntime: true
+win:
+  target: [nsis, portable]
+  artifactName: JARVIS-${version}-setup.${ext}
+linux:
+  target: [AppImage, deb]
+  category: Utility
+  maintainer: Jarvis Team

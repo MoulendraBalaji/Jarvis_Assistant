@@ -1,0 +1,210 @@
+import { ipcMain, BrowserWindow, Notification } from "electron";
+import { dbLayer } from "../services/db";
+import { healthMonitor } from "../services/healthMonitor";
+import { router } from "../services/router";
+import { profileService } from "../services/profileService";
+import { classroomAdapter } from "../services/adapters/classroomAdapter";
+import { whatsappWebAdapter } from "../services/adapters/whatsappWebAdapter";
+import { notifMirrorAdapter } from "../services/adapters/notifMirrorAdapter";
+import { manualCaptureAdapter } from "../services/adapters/manualCaptureAdapter";
+import { voice } from "../services/voice/voice";
+import { overlay } from "../services/overlay";
+import { screenContext } from "../services/screenContext";
+import { uiAutomation } from "../services/uiAutomation";
+import { vectorStore } from "../services/vectorStore";
+import { deviceSync } from "../services/deviceSync";
+import { AdapterState, OverlayMode } from "../../shared/types";
+
+const adapters = new Map<string, any>([
+  ["classroom", classroomAdapter],
+  ["whatsapp-web", whatsappWebAdapter],
+  ["notif-mirror", notifMirrorAdapter],
+  ["manual-capture", manualCaptureAdapter]
+]);
+
+function pushEvent(channel: string, ...args: unknown[]) {
+  BrowserWindow.getAllWindows().forEach((w) => {
+    if (!w.isDestroyed()) {
+      w.webContents.send(channel, ...args);
+    }
+  });
+}
+
+export function registerIpc() {
+  adapters.forEach((a) => {
+    healthMonitor.register({
+      id: a.id,
+      label: a.label,
+      description: a.description,
+      status: a.status,
+      lastSyncAt: a.lastSyncAt
+    });
+    a.onHealthChange((s: string) =>
+      healthMonitor.update(a.id, { status: s as AdapterState["status"] })
+    );
+  });
+
+  // Voice event listeners
+  voice.on("state-change", (state) => pushEvent("voice:state-change", state));
+  voice.on("enroll-progress", (p) => pushEvent("voice:enroll-progress", p));
+  voice.on("audio-level", (level) => pushEvent("voice:audio-level", level));
+  voice.on("wake", () => pushEvent("voice:wake"));
+  voice.on("transcript", (text) => pushEvent("voice:transcript", text));
+  voice.on("unauthorized-voice", (score) => pushEvent("voice:unauthorized-voice", score));
+
+  // Overlay event listeners
+  overlay.on("mode-change", (mode) => pushEvent("overlay:mode-change", mode));
+  overlay.on("notification-queued", (item) => pushEvent("overlay:notification-queued", item));
+  overlay.on("queue-flushed", (items) => pushEvent("overlay:queue-flushed", items));
+
+  // Device sync event listeners
+  deviceSync.on("paired", () => pushEvent("sync:paired"));
+  deviceSync.on("task-created", (task) => pushEvent("sync:task-created", task));
+
+  // Tasks IPC
+  ipcMain.handle("tasks:list", () => dbLayer.all("tasks"));
+  ipcMain.handle("tasks:create", (_e, input) => {
+    const task = dbLayer.insert("tasks", {
+      id: dbLayer.genId(),
+      createdAt: Date.now(),
+      completed: 0,
+      dueAt: null,
+      source: "manual",
+      recurring: null,
+      tags: "[]",
+      ...input
+    });
+    pushEvent("tasks:update");
+    return task;
+  });
+  ipcMain.handle("tasks:update", (_e, id, patch) => {
+    const res = dbLayer.update("tasks", id, patch);
+    pushEvent("tasks:update");
+    return res;
+  });
+  ipcMain.handle("tasks:remove", (_e, id) => {
+    dbLayer.remove("tasks", id);
+    pushEvent("tasks:update");
+  });
+
+  // Chat & Smart Router IPC
+  ipcMain.handle("chat:send", async (_e, text) => {
+    const profile = profileService.get();
+    const history = (dbLayer.all("chat") as any[]).map((m) => ({
+      role: m.role,
+      content: m.text
+    }));
+    const result = await router.route({ text, profile, history });
+    dbLayer.insert("chat", {
+      id: dbLayer.genId(),
+      role: "user",
+      text,
+      intent: result.intent,
+      createdAt: Date.now()
+    });
+    dbLayer.insert("chat", {
+      id: dbLayer.genId(),
+      role: "assistant",
+      text: result.answer,
+      intent: result.intent,
+      createdAt: Date.now()
+    });
+
+    if (result.intent === "task.create" && result.params.title) {
+      dbLayer.insert("tasks", {
+        id: dbLayer.genId(),
+        createdAt: Date.now(),
+        title: String(result.params.title),
+        completed: 0,
+        dueAt: result.params.dueAt ? Number(result.params.dueAt) : null,
+        source: "chat_nlp",
+        recurring: null,
+        tags: "[]"
+      });
+      pushEvent("tasks:update");
+    }
+
+    if (result.intent === "automation.openApp" && result.params.target) {
+      const r = uiAutomation.open(String(result.params.target));
+      if (!r.ok) result.answer = r.reason ?? result.answer;
+    }
+
+    pushEvent("chat:update");
+    return result;
+  });
+
+  ipcMain.handle("chat:history", () => dbLayer.all("chat"));
+
+  // Integrations & Health IPC
+  ipcMain.handle("integrations:list", () => healthMonitor.snapshot());
+  ipcMain.handle("integrations:reconnect", async (_e, id) => {
+    const a = adapters.get(id);
+    if (a) await a.reconnect();
+    return healthMonitor.snapshot().find((s) => s.id === id);
+  });
+  ipcMain.handle("integrations:authorize", async (_e, id) => {
+    const a = adapters.get(id);
+    if (a) await a.authorize();
+    return healthMonitor.snapshot().find((s) => s.id === id);
+  });
+
+  // Profile IPC
+  ipcMain.handle("profile:get", () => profileService.get());
+  ipcMain.handle("profile:set", (_e, patch) => profileService.set(patch));
+  ipcMain.handle("profile:deleteFact", (_e, key) => profileService.deleteFact(key));
+
+  // Briefing IPC
+  ipcMain.handle("briefing:generate", () => {
+    const tasks = dbLayer.all("tasks") as any[];
+    const assignments = dbLayer.all("assignments") as any[];
+    return [
+      ...tasks
+        .filter((t) => !t.completed)
+        .map((t) => ({ kind: "task" as const, title: t.title, dueAt: t.dueAt ? Number(t.dueAt) : null })),
+      ...assignments.map((a) => ({
+        kind: "assignment" as const,
+        title: `${a.course}: ${a.title}`,
+        dueAt: a.dueAt ? Number(a.dueAt) : null
+      }))
+    ];
+  });
+
+  // Voice Engine IPC
+  ipcMain.handle("voice:enroll", () => voice.enroll());
+  ipcMain.handle("voice:start", () => voice.start());
+  ipcMain.handle("voice:stop", () => voice.stop());
+  ipcMain.handle("voice:getStatus", () => voice.getStatus());
+  ipcMain.handle("voice:speak", (_e, text: string) => voice.speak(text));
+
+  // Overlay & Suppression State Machine IPC
+  ipcMain.handle("overlay:summon", () => overlay.summon());
+  ipcMain.handle("overlay:dismiss", () => overlay.dismiss());
+  ipcMain.handle("overlay:toggle", () => overlay.toggle());
+  ipcMain.handle("overlay:setMode", (_e, mode: OverlayMode) => overlay.setMode(mode));
+  ipcMain.handle("overlay:getStatus", () => overlay.getStatus());
+  ipcMain.handle("overlay:getQueue", () => overlay.getSuppressedQueue());
+  ipcMain.handle("overlay:flushQueue", () => overlay.flushQueue());
+
+  // Device Sync IPC
+  ipcMain.handle("sync:getStatus", () => deviceSync.getStatus());
+  ipcMain.handle("sync:regenerateCode", () => deviceSync.regenerateCode());
+
+  // Second Sight Screen & Recall Memory RAG IPC
+  ipcMain.handle("screen:describe", (_e, prompt) => screenContext.describe(prompt));
+  ipcMain.handle("recall:query", async (_e, text) => {
+    const hits = await vectorStore.query(text, 3);
+    if (!hits.length) return "I don't have anything stored about that yet.";
+    return hits.map((h) => `• ${h.text}`).join("\n");
+  });
+
+  return {
+    notify: async (title: string, body: string) => {
+      const suppress = await overlay.shouldSuppress();
+      if (suppress) {
+        overlay.queueNotification(title, body);
+      } else {
+        new Notification({ title, body }).show();
+      }
+    }
+  };
+}

@@ -1,0 +1,70 @@
+.orb {
+  position: relative;
+  border-radius: 50%;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  background: var(--clay-surface);
+  box-shadow: var(--clay-shadow-raised);
+  transition: var(--clay-transition);
+}
+
+.orb__core {
+  width: 46%;
+  height: 46%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #c3d0fb, var(--clay-primary));
+  box-shadow: var(--clay-shadow-raised-sm);
+  transition: var(--clay-transition);
+}
+
+.orb__ring {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  border: 2px solid rgba(163, 177, 198, 0.35);
+}
+
+.orb__pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.orb--idle .orb__core { filter: saturate(0.85); }
+
+.orb--listening .orb__core {
+  background: radial-gradient(circle at 35% 30%, #bfe9c9, #6fcf97);
+  animation: orbBreathe 1.6s ease-in-out infinite;
+}
+.orb--listening .orb__pulse {
+  opacity: 1;
+  border: 2px solid rgba(95, 207, 128, 0.5);
+  animation: orbExpand 1.8s ease-out infinite;
+}
+
+.orb--thinking .orb__core {
+  background: radial-gradient(circle at 35% 30%, #f7d9a3, var(--clay-accent));
+  animation: orbSpin 2.2s linear infinite;
+}
+
+.orb--speaking .orb__core {
+  background: radial-gradient(circle at 35% 30%, #d9c3fb, #a98ff0);
+  animation: orbBreathe 0.9s ease-in-out infinite;
+}
+
+.orb:hover { transform: scale(1.03); }
+
+@keyframes orbBreathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+@keyframes orbExpand {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+@keyframes orbSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

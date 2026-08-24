@@ -1,0 +1,56 @@
+:root {
+  --clay-bg: #e8ecf3;
+  --clay-surface: #eef1f7;
+  --clay-primary: #a3b8f7;
+  --clay-accent: #f7c8a3;
+  --clay-text: #3b4256;
+  --clay-text-muted: #7c8399;
+
+  --clay-radius-sm: 16px;
+  --clay-radius-md: 24px;
+  --clay-radius-lg: 32px;
+  --clay-radius-pill: 999px;
+
+  --clay-shadow-raised:
+    -8px -8px 16px rgba(255, 255, 255, 0.7),
+     8px  8px 16px rgba(163, 177, 198, 0.5);
+  --clay-shadow-pressed:
+    inset -6px -6px 12px rgba(255, 255, 255, 0.6),
+    inset  6px  6px 12px rgba(163, 177, 198, 0.5);
+
+  --clay-shadow-raised-sm:
+    -4px -4px 8px rgba(255, 255, 255, 0.7),
+     4px  4px 8px rgba(163, 177, 198, 0.45);
+
+  --clay-transition: all 180ms ease-out;
+
+  --clay-font: "Quicksand", "Nunito", "Poppins", system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--clay-font);
+  color: var(--clay-text);
+  background: var(--clay-bg);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+}
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-thumb {
+  background: var(--clay-primary);
+  border-radius: var(--clay-radius-pill);
+  border: 3px solid var(--clay-bg);
+}

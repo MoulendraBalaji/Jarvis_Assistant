@@ -1,0 +1,46 @@
+{
+  "name": "jarvis-assistant",
+  "version": "1.0.0",
+  "description": "JARVIS — Voice-Locked, Invisible AI Desktop Assistant with Local Biometrics, Multi-source Coursework Sync & Mobile Companion",
+  "author": "Moulendra Balaji",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MoulendraBalaji/Jarvis_Assistant.git"
+  },
+  "license": "MIT",
+  "main": "dist-electron/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit",
+    "package": "electron-vite build && electron-builder",
+    "package:win": "electron-vite build && electron-builder --win",
+    "package:mac": "electron-vite build && electron-builder --mac",
+    "package:linux": "electron-vite build && electron-builder --linux"
+  },
+  "dependencies": {
+    "chrono-node": "^2.7.6",
+    "node-cron": "^3.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^4.5.5"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.3.0",
+    "keytar": "^7.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/node-cron": "^3.0.11",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "electron": "^31.3.0",
+    "electron-builder": "^24.13.3",
+    "electron-vite": "^2.3.0",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0"
+  }
+}
