@@ -10,13 +10,13 @@ files:
   - package.json
 asar: true
 mac:
-  target: [dmg, zip]
+  target: [zip]
   category: public.app-category.productivity
-  hardenedRuntime: true
 win:
-  target: [nsis, portable]
-  artifactName: JARVIS-${version}-setup.${ext}
+  target: [nsis, portable, zip]
+  artifactName: JARVIS-${version}-${os}-${arch}.${ext}
 linux:
-  target: [AppImage, deb]
+  target: [tar.gz, deb, zip]
   category: Utility
   maintainer: Jarvis Team
+  artifactName: JARVIS-${version}-${os}-${arch}.${ext}
