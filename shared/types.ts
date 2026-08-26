@@ -162,5 +162,11 @@ export interface JarvisAPI {
   recall: {
     query(text: string): Promise<string>;
   };
+  window: {
+    minimize(): Promise<void>;
+    maximize(): Promise<void>;
+    close(): Promise<void>;
+    isMaximized(): Promise<boolean>;
+  };
   onEvent(channel: string, cb: (...args: any[]) => void): () => void;
 }

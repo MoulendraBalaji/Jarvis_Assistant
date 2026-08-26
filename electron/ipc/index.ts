@@ -15,6 +15,21 @@ import { vectorStore } from "../services/vectorStore";
 import { deviceSync } from "../services/deviceSync";
 import { AdapterState, OverlayMode } from "../../shared/types";
 
+const PYTHON_BACKEND_URL = "http://127.0.0.1:8766";
+
+async function proxyToPython(endpoint: string, options?: RequestInit): Promise<any> {
+  try {
+    const resp = await fetch(`${PYTHON_BACKEND_URL}${endpoint}`, {
+      headers: { "Content-Type": "application/json" },
+      ...options,
+    });
+    if (!resp.ok) throw new Error(`Python backend returned ${resp.status}`);
+    return await resp.json();
+  } catch {
+    return null;
+  }
+}
+
 const adapters = new Map<string, any>([
   ["classroom", classroomAdapter],
   ["whatsapp-web", whatsappWebAdapter],
@@ -87,14 +102,29 @@ export function registerIpc() {
     pushEvent("tasks:update");
   });
 
-  // Chat & Smart Router IPC
+  // Chat & Smart Router IPC — proxies to Python multi-agent backend first
   ipcMain.handle("chat:send", async (_e, text) => {
     const profile = profileService.get();
     const history = (dbLayer.all("chat") as any[]).map((m) => ({
       role: m.role,
       content: m.text
     }));
-    const result = await router.route({ text, profile, history });
+
+    let result: any = null;
+
+    // Try Python multi-agent backend first
+    const pyResult = await proxyToPython("/api/chat", {
+      method: "POST",
+      body: JSON.stringify({ text, history, profile }),
+    });
+
+    if (pyResult && pyResult.answer) {
+      result = pyResult;
+    } else {
+      // Fallback to local TypeScript router
+      result = await router.route({ text, profile, history });
+    }
+
     dbLayer.insert("chat", {
       id: dbLayer.genId(),
       role: "user",
@@ -153,8 +183,12 @@ export function registerIpc() {
   ipcMain.handle("profile:set", (_e, patch) => profileService.set(patch));
   ipcMain.handle("profile:deleteFact", (_e, key) => profileService.deleteFact(key));
 
-  // Briefing IPC
-  ipcMain.handle("briefing:generate", () => {
+  // Briefing IPC — proxies to Python backend
+  ipcMain.handle("briefing:generate", async () => {
+    const pyResult = await proxyToPython("/api/briefing");
+    if (pyResult && Array.isArray(pyResult)) {
+      return pyResult;
+    }
     const tasks = dbLayer.all("tasks") as any[];
     const assignments = dbLayer.all("assignments") as any[];
     return [

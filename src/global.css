@@ -27,6 +27,26 @@
   --clay-font: "Quicksand", "Nunito", "Poppins", system-ui, -apple-system, sans-serif;
 }
 
+[data-theme="dark"] {
+  --clay-bg: #1a1d27;
+  --clay-surface: #222637;
+  --clay-primary: #7b93ea;
+  --clay-accent: #e5a86f;
+  --clay-text: #e2e5f0;
+  --clay-text-muted: #8b90a8;
+
+  --clay-shadow-raised:
+    -6px -6px 14px rgba(50, 54, 72, 0.5),
+     6px  6px 14px rgba(10, 12, 18, 0.6);
+  --clay-shadow-pressed:
+    inset -4px -4px 10px rgba(50, 54, 72, 0.4),
+    inset  4px  4px 10px rgba(10, 12, 18, 0.5);
+
+  --clay-shadow-raised-sm:
+    -3px -3px 6px rgba(50, 54, 72, 0.45),
+     3px  3px 6px rgba(10, 12, 18, 0.5);
+}
+
 * {
   box-sizing: border-box;
 }

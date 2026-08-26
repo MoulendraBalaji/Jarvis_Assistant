@@ -1,0 +1,66 @@
+.titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  background: var(--clay-surface);
+  border-radius: var(--clay-radius-lg) var(--clay-radius-lg) 0 0;
+  padding: 0 6px 0 14px;
+  user-select: none;
+  -webkit-app-region: no-drag;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.08);
+}
+
+.titlebar__drag {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  -webkit-app-region: drag;
+}
+
+.titlebar__title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--clay-text-muted);
+}
+
+.titlebar__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  -webkit-app-region: no-drag;
+}
+
+.titlebar__btn {
+  width: 32px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--clay-text-muted);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 150ms ease-out;
+  padding: 0;
+}
+
+.titlebar__btn:hover {
+  background: rgba(128, 128, 128, 0.1);
+  color: var(--clay-text);
+}
+
+.titlebar__btn--close:hover {
+  background: #e84057;
+  color: #fff;
+}
+
+.titlebar__btn--theme {
+  font-size: 15px;
+  margin-right: 6px;
+  width: 30px;
+}

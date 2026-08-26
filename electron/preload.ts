@@ -55,7 +55,13 @@ const api: JarvisAPI = {
     const listener = (_e: unknown, ...args: unknown[]) => cb(...args);
     ipcRenderer.on(channel, listener);
     return () => ipcRenderer.removeListener(channel, listener);
-  }
+  },
+  window: {
+    minimize: () => ipcRenderer.invoke("window:minimize"),
+    maximize: () => ipcRenderer.invoke("window:maximize"),
+    close: () => ipcRenderer.invoke("window:close"),
+    isMaximized: () => ipcRenderer.invoke("window:isMaximized"),
+  },
 };
 
 contextBridge.exposeInMainWorld("jarvis", api);

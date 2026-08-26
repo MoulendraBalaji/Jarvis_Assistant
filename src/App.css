@@ -1,10 +1,22 @@
 .app {
   height: 100%;
   display: grid;
+  grid-template-rows: auto 1fr;
   grid-template-columns: 132px 1fr;
   background: var(--clay-bg);
-  padding: 18px;
+  padding: 0 18px 18px 18px;
+  gap: 0;
+}
+
+.app__titlebar {
+  grid-column: 1 / -1;
+}
+
+.app__body {
+  display: grid;
+  grid-template-columns: 132px 1fr;
   gap: 18px;
+  min-height: 0;
 }
 
 .app__rail {
@@ -16,6 +28,8 @@
   border-radius: var(--clay-radius-lg);
   background: var(--clay-surface);
   box-shadow: var(--clay-shadow-raised);
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .app__nav {
@@ -49,6 +63,7 @@
 .app__main {
   overflow: hidden;
   border-radius: var(--clay-radius-lg);
+  min-height: 0;
 }
 
 .app__grid {

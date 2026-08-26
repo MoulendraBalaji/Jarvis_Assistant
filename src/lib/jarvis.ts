@@ -91,6 +91,12 @@ const fallbackAPI: JarvisAPI = {
   recall: {
     query: async () => ""
   },
+  window: {
+    minimize: async () => {},
+    maximize: async () => {},
+    close: async () => {},
+    isMaximized: async () => false
+  },
   onEvent: (_channel, _cb) => {
     return () => {};
   }
