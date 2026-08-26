@@ -3,7 +3,6 @@ productName: JARVIS
 copyright: Copyright © 2026 Jarvis Team
 directories:
   output: release
-  buildResources: build
 files:
   - dist
   - dist-electron
