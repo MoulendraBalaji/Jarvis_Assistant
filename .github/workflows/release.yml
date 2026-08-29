@@ -74,9 +74,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p artifacts
-          cp -f release/JARVIS-Windows-installer.exe artifacts/ 2>/dev/null || true
-          cp -f release/JARVIS-2.0.0-mac.dmg artifacts/ 2>/dev/null || true
-          cp -f release/JARVIS-2.0.0-linux.AppImage artifacts/ 2>/dev/null || true
+          cp -f release/JARVIS-* artifacts/ 2>/dev/null || true
 
       - name: Upload installer artifacts
         uses: actions/upload-artifact@v4
