@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { ClayCard, ClayButton, ClayInput, ClayToggle, ClayBadge } from "../design-system";
 import { useProfile } from "../store/profile";
+import { useVoice } from "../store/voice";
 import { jarvis } from "../lib/jarvis";
 import { DeviceSyncStatus, VoiceEnrollmentProgress, VoiceStatus } from "../../shared/types";
 
 export function ProfileSettings() {
   const { profile, load, set, deleteFact } = useProfile();
+  const voice = useVoice();
   const [style, setStyle] = useState("");
   const [voiceStatus, setVoiceStatus] = useState<VoiceStatus | null>(null);
   const [syncStatus, setSyncStatus] = useState<DeviceSyncStatus | null>(null);
@@ -14,6 +16,7 @@ export function ProfileSettings() {
 
   useEffect(() => {
     load();
+    voice.load();
     loadVoiceAndSync();
 
     const unsubVoice = jarvis.onEvent("voice:enroll-progress", (p: VoiceEnrollmentProgress) => {
@@ -148,6 +151,25 @@ export function ProfileSettings() {
             Test Speech (TTS)
           </ClayButton>
         </div>
+
+        <div className="console-row" style={{ marginTop: 16, justifyContent: "space-between" }}>
+          <div>
+            <div style={{ fontSize: 12 }}>Automatic listening (wake word)</div>
+            <div style={{ fontSize: 11, color: "var(--console-text-muted)" }}>
+              state: {voice.status?.state ?? "\u2026"}
+              {voice.status?.accessKeyConfigured ? "" : " · no Picovoice key, simulated"}
+            </div>
+          </div>
+          <ClayToggle
+            on={voice.listening}
+            onChange={() => voice.setListening(!voice.listening)}
+            aria-label="Toggle automatic voice listening"
+          />
+        </div>
+        <p style={{ margin: "8px 0 0", fontSize: 11, color: "var(--console-text-muted)" }}>
+          When the loop is on, JARVIS listens for its wake word continuously and reacts to
+          triggers reactively. Turn it off to make listening fully manual again.
+        </p>
       </ClayCard>
 
       <ClayCard large>
