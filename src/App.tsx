@@ -18,15 +18,15 @@ import { useChat } from "./store/chat";
 import { useUI, View } from "./store/ui";
 import { VoiceState } from "../shared/types";
 
-const NAV: { id: View; label: string; icon: string }[] = [
-  { id: "briefing", label: "Briefing", icon: "\u2600\uFE0F" },
-  { id: "tasks", label: "Tasks", icon: "\u2705" },
-  { id: "chat", label: "Chat", icon: "\uD83D\uDCAC" },
-  { id: "recall", label: "Recall", icon: "\uD83E\uDDF5" },
-  { id: "screen", label: "Screen", icon: "\uD83D\uDDA5\uFE0F" },
-  { id: "integrations", label: "Sources", icon: "\uD83D\uDD0C" },
-  { id: "focus", label: "Focus", icon: "\uD83C\uDFAF" },
-  { id: "profile", label: "Profile", icon: "\uD83E\uDDE0" }
+const NAV: { id: View; label: string }[] = [
+  { id: "briefing", label: "Briefing" },
+  { id: "tasks", label: "Tasks" },
+  { id: "chat", label: "Chat" },
+  { id: "recall", label: "Recall" },
+  { id: "screen", label: "Screen" },
+  { id: "integrations", label: "Sources" },
+  { id: "focus", label: "Focus" },
+  { id: "profile", label: "Profile" }
 ];
 
 export default function App() {
@@ -77,21 +77,19 @@ export default function App() {
         <aside className="app__rail">
           <AssistantOrb state={orb} size={84} onActivate={activate} />
           <nav className="app__nav">
-            {NAV.map((n) => (
+            {NAV.map((n, idx) => (
               <button
                 key={n.id}
                 className={`app__navbtn ${view === n.id ? "app__navbtn--active" : ""}`}
                 onClick={() => setView(n.id)}
                 title={n.label}
               >
-                <span style={{ fontSize: 20 }}>{n.icon}</span>
-                <span style={{ fontSize: 11 }}>{n.label}</span>
+                <span className="app__nav-idx">{String(idx + 1).padStart(2, "0")}</span>
+                <span>{n.label}</span>
               </button>
             ))}
           </nav>
-          <div style={{ marginTop: "auto", fontSize: 10, color: "var(--clay-text-muted)", textAlign: "center" }}>
-            voice-locked
-          </div>
+          <div className="app__foot">v2 &#183; console</div>
         </aside>
 
         <main className="app__main">

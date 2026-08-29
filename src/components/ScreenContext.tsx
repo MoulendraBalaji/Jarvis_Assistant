@@ -10,7 +10,7 @@ export function ScreenContext() {
   };
 
   return (
-    <ClayCard large eyebrow="Screen Context">
+    <ClayCard large eyebrow="05 · Screen Context">
       <p style={{ margin: "0 0 14px", fontSize: 12, color: "var(--console-text-muted)" }}>
         Capture what is currently on your display and ask JARVIS to describe or analyze it —
         errors, docs, code, anything visible.

@@ -9,24 +9,27 @@ export function AssignmentFeed() {
   useEffect(() => {
     const load = async () => {
       const raw = (await jarvis.briefing.generate()) as any[];
-      setItems(raw.filter((r) => r.kind === "assignment").map((r) => ({ id: r.title, course: "", title: r.title, dueAt: r.dueAt, link: "", state: "", syncedAt: 0 })));
+      setItems(
+        raw
+          .filter((r) => r.kind === "assignment")
+          .map((r) => ({ id: r.title, course: "", title: r.title, dueAt: r.dueAt, link: "", state: "", syncedAt: 0 }))
+      );
     };
     load();
   }, []);
 
   return (
-    <ClayCard>
-      <h3 style={{ margin: "0 0 12px", fontSize: 16 }}>Classroom</h3>
+    <ClayCard eyebrow="03 · Coursework">
       {items.length === 0 ? (
-        <p style={{ color: "var(--clay-text-muted)", fontSize: 13 }}>
-          Connect Google Classroom in Integrations to load live coursework.
+        <p className="console-meta" style={{ margin: 0 }}>
+          Connect Google Classroom in Sources to load live coursework.
         </p>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           {items.map((a) => (
-            <div key={a.id} style={{ fontSize: 13, padding: "8px 12px", borderRadius: 14, boxShadow: "var(--clay-shadow-raised-sm)" }}>
-              {a.title}
-              {a.dueAt && <span style={{ color: "var(--clay-text-muted)" }}> · due {new Date(a.dueAt).toLocaleDateString()}</span>}
+            <div key={a.id} className="console-row">
+              <span style={{ flex: 1, fontSize: 12 }}>{a.title}</span>
+              {a.dueAt && <span className="console-count">due {new Date(a.dueAt).toLocaleDateString()}</span>}
             </div>
           ))}
         </div>

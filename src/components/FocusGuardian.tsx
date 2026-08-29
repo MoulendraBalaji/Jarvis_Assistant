@@ -10,7 +10,7 @@ export function FocusGuardian() {
   }, [load]);
 
   return (
-    <ClayCard eyebrow="Focus Guardian">
+    <ClayCard eyebrow="04 · Focus Guardian">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
           <p style={{ margin: 0, fontSize: 12, color: "var(--console-text-muted)" }}>

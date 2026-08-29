@@ -2,13 +2,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 36px;
-  background: var(--clay-surface);
-  border-radius: var(--clay-radius-lg) var(--clay-radius-lg) 0 0;
-  padding: 0 6px 0 14px;
+  height: 34px;
+  background: transparent;
+  border-bottom: 1px solid var(--console-border);
+  padding: 0 6px 0 12px;
   user-select: none;
   -webkit-app-region: no-drag;
-  border-bottom: 1px solid rgba(128, 128, 128, 0.08);
 }
 
 .titlebar__drag {
@@ -20,11 +19,12 @@
 }
 
 .titlebar__title {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 2px;
+  font-family: var(--console-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--clay-text-muted);
+  color: var(--console-text-muted);
 }
 
 .titlebar__actions {
@@ -35,32 +35,35 @@
 }
 
 .titlebar__btn {
-  width: 32px;
-  height: 28px;
+  width: 30px;
+  height: 26px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: none;
+  border: 1px solid transparent;
+  border-radius: var(--console-radius-sm);
   background: transparent;
-  color: var(--clay-text-muted);
+  color: var(--console-text-muted);
   cursor: pointer;
-  border-radius: 8px;
-  transition: all 150ms ease-out;
   padding: 0;
+  transition: transform var(--console-transition-fast), opacity var(--console-transition-fast);
 }
-
 .titlebar__btn:hover {
-  background: rgba(128, 128, 128, 0.1);
-  color: var(--clay-text);
+  background: var(--console-surface-2);
+  border-color: var(--console-border);
+  color: var(--console-text);
+}
+.titlebar__btn:active {
+  transform: scale(0.94);
 }
 
 .titlebar__btn--close:hover {
-  background: #e84057;
+  background: var(--console-red);
+  border-color: var(--console-red);
   color: #fff;
 }
 
 .titlebar__btn--theme {
-  font-size: 15px;
+  font-size: 13px;
   margin-right: 6px;
-  width: 30px;
 }

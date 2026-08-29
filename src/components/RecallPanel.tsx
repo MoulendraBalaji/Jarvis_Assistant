@@ -10,7 +10,7 @@ export function RecallPanel() {
   };
 
   return (
-    <ClayCard large eyebrow="Memory & Recall">
+    <ClayCard large eyebrow="06 · Memory & Recall">
       <p style={{ margin: "0 0 14px", fontSize: 12, color: "var(--console-text-muted)" }}>
         Search JARVIS' long-term memory graph. Every remembered fact and quick capture is
         stored locally and retrievable here.

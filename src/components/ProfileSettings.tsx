@@ -78,46 +78,66 @@ export function ProfileSettings() {
 
   if (!profile) return <ClayCard>Loading profile…</ClayCard>;
 
+  const pct = enrollProgress && enrollProgress.totalSamples > 0
+    ? Math.min(100, (enrollProgress.currentSample / enrollProgress.totalSamples) * 100)
+    : 0;
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <ClayCard large>
-        <h2 style={{ margin: "0 0 14px", fontSize: 18 }}>Personalization & Preferences</h2>
-        <p style={{ fontSize: 12, color: "var(--clay-text-muted)", marginTop: 0 }}>
-          Everything JARVIS has learned — fully editable and transparent. Nothing opaque.
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <ClayCard large eyebrow="09 · Profile & Preferences">
+        <p className="console-meta" style={{ margin: "0 0 14px" }}>
+          Everything JARVIS has learned — fully editable and transparent.
         </p>
 
-        <label style={{ fontSize: 13, fontWeight: 600 }}>Phrasing style</label>
-        <div style={{ display: "flex", gap: 10, marginTop: 8, marginBottom: 16 }}>
+        <label className="console-meta" style={{ display: "block", marginBottom: 6 }}>
+          Phrasing style
+        </label>
+        <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
           <ClayInput value={style} onChange={(e) => setStyle(e.target.value)} />
           <ClayButton variant="primary" onClick={() => set({ phrasingStyle: style })}>Save</ClayButton>
         </div>
 
-        <label style={{ fontSize: 13, fontWeight: 600 }}>Active hours</label>
-        <p style={{ fontSize: 12, color: "var(--clay-text-muted)" }}>
-          {profile.activeHours.start}:00 – {profile.activeHours.end}:00 (Notifications are automatically suppressed outside these hours)
-        </p>
-
-        <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 8 }}>Learned facts & memory</label>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {profile.learnedFacts.length === 0 && (
-            <span style={{ fontSize: 12, color: "var(--clay-text-muted)" }}>No facts learned yet. Say "remember that..." to store memories.</span>
-          )}
-          {profile.learnedFacts.map((f) => (
-            <div key={f.key} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", borderRadius: 14, boxShadow: "var(--clay-shadow-raised-sm)" }}>
-              <span style={{ fontSize: 13 }}><strong>{f.key}</strong>: {f.value}</span>
-              <button onClick={() => deleteFact(f.key)} style={{ border: "none", background: "transparent", color: "#c15050", cursor: "pointer" }}>🗑</button>
+        <div className="console-row" style={{ justifyContent: "space-between" }}>
+          <div>
+            <div style={{ fontSize: 12 }}>Active hours</div>
+            <div className="console-meta">
+              {profile.activeHours.start}:00 – {profile.activeHours.end}:00 ·
+              notifications suppressed outside these hours
             </div>
-          ))}
+          </div>
+          <ClayToggle
+            on={false}
+            onChange={() => void 0}
+            aria-label="Active hours read-only"
+            style={{ opacity: 0.5, cursor: "default" }}
+          />
+        </div>
+
+        <div style={{ marginTop: 14 }}>
+          <div style={{ fontSize: 12, marginBottom: 8 }}>Learned facts & memory</div>
+          {profile.learnedFacts.length === 0 && (
+            <span className="console-meta">No facts learned yet. Say "remember that…" to store memories.</span>
+          )}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {profile.learnedFacts.map((f) => (
+              <div key={f.key} className="console-row" style={{ justifyContent: "space-between" }}>
+                <span style={{ fontSize: 13 }}>
+                  <strong>{f.key}</strong>: {f.value}
+                </span>
+                <button className="console-delete" onClick={() => deleteFact(f.key)} aria-label={`Delete ${f.key}`}>
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </ClayCard>
 
-      <ClayCard large>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+      <ClayCard large eyebrow="10 · Voice & Audio">
+        <div className="console-row" style={{ justifyContent: "space-between" }}>
           <div>
-            <h3 style={{ margin: "0 0 4px", fontSize: 16 }}>🎙️ Voice-Lock & Speaker Verification</h3>
-            <p style={{ margin: 0, fontSize: 12, color: "var(--clay-text-muted)" }}>
-              Eagle acoustic voiceprint. Rejects unauthorized voices and responds exclusively to your biometric profile.
-            </p>
+            <div style={{ fontSize: 12 }}>Voice-Lock & Speaker Verification</div>
+            <div className="console-meta">Eagle acoustic voiceprint. Rejects unauthorized voices.</div>
           </div>
           <ClayBadge status={voiceStatus?.enrolled ? "healthy" : "unauthenticated"}>
             {voiceStatus?.enrolled ? "Voice-Locked" : "Not Enrolled"}
@@ -125,27 +145,29 @@ export function ProfileSettings() {
         </div>
 
         {enrollProgress && (
-          <div style={{ padding: "12px 14px", borderRadius: 14, boxShadow: "var(--clay-shadow-pressed)", marginBottom: 14, background: "rgba(138, 160, 240, 0.08)" }}>
+          <div className="console-pre" style={{ marginTop: 12, padding: "10px 12px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 6 }}>
               <span>{enrollProgress.message}</span>
-              <strong>Sample {enrollProgress.currentSample} / {enrollProgress.totalSamples}</strong>
+              <strong>sample {enrollProgress.currentSample}/{enrollProgress.totalSamples}</strong>
             </div>
-            <div style={{ width: "100%", height: 6, borderRadius: 3, background: "rgba(0,0,0,0.1)", overflow: "hidden" }}>
+            <div style={{ height: 4, background: "var(--console-surface-3)", position: "relative", overflow: "hidden" }}>
               <div
                 style={{
-                  width: `${(enrollProgress.currentSample / enrollProgress.totalSamples) * 100}%`,
-                  height: "100%",
-                  background: "linear-gradient(90deg, #8aa0f0, #6c82db)",
-                  transition: "width 0.3s ease"
+                  position: "absolute",
+                  inset: 0,
+                  background: "var(--console-accent)",
+                  transform: `scaleX(${pct / 100})`,
+                  transformOrigin: "left",
+                  transition: "transform 150ms ease-out"
                 }}
               />
             </div>
           </div>
         )}
 
-        <div style={{ display: "flex", gap: 10 }}>
+        <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
           <ClayButton variant="primary" onClick={handleEnrollVoice} disabled={enrolling}>
-            {enrolling ? "Capturing Voice..." : voiceStatus?.enrolled ? "Re-enroll Voiceprint" : "Enroll Voiceprint"}
+            {enrolling ? "Capturing Voice…" : voiceStatus?.enrolled ? "Re-enroll Voiceprint" : "Enroll Voiceprint"}
           </ClayButton>
           <ClayButton variant="ghost" onClick={() => jarvis.voice.speak("JARVIS voice synthesizer online and ready.")}>
             Test Speech (TTS)
@@ -155,8 +177,8 @@ export function ProfileSettings() {
         <div className="console-row" style={{ marginTop: 16, justifyContent: "space-between" }}>
           <div>
             <div style={{ fontSize: 12 }}>Automatic listening (wake word)</div>
-            <div style={{ fontSize: 11, color: "var(--console-text-muted)" }}>
-              state: {voice.status?.state ?? "\u2026"}
+            <div className="console-meta">
+              state: {voice.status?.state ?? "…"}
               {voice.status?.accessKeyConfigured ? "" : " · no Picovoice key, simulated"}
             </div>
           </div>
@@ -166,38 +188,34 @@ export function ProfileSettings() {
             aria-label="Toggle automatic voice listening"
           />
         </div>
-        <p style={{ margin: "8px 0 0", fontSize: 11, color: "var(--console-text-muted)" }}>
-          When the loop is on, JARVIS listens for its wake word continuously and reacts to
-          triggers reactively. Turn it off to make listening fully manual again.
+        <p className="console-meta" style={{ margin: "8px 0 0" }}>
+          Loop on → JARVIS listens continuously for its wake word. Loop off → listening is
+          fully manual.
         </p>
       </ClayCard>
 
-      <ClayCard large>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+      <ClayCard large eyebrow="11 · Companion & Sync">
+        <div className="console-row" style={{ justifyContent: "space-between" }}>
           <div>
-            <h3 style={{ margin: "0 0 4px", fontSize: 16 }}>📱 Phone Companion & Local LAN Sync</h3>
-            <p style={{ margin: 0, fontSize: 12, color: "var(--clay-text-muted)" }}>
-              Pair your React Native Expo companion app to mirror WhatsApp notifications and quick captures.
-            </p>
+            <div style={{ fontSize: 12 }}>Phone Companion & Local LAN Sync</div>
+            <div className="console-meta">Pair the React Native Expo companion app to mirror notifications and captures.</div>
           </div>
           <ClayBadge status={syncStatus?.paired ? "healthy" : "unauthenticated"}>
             {syncStatus?.paired ? "Paired" : "Awaiting Pairing"}
           </ClayBadge>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "12px 14px", borderRadius: 14, boxShadow: "var(--clay-shadow-raised-sm)", marginBottom: 14 }}>
+        <div className="console-pre" style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 14 }}>
           <div>
-            <div style={{ fontSize: 11, color: "var(--clay-text-muted)" }}>6-DIGIT PAIRING PIN</div>
-            <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: 4, color: "#4f69db" }}>
+            <div className="console-meta" style={{ fontSize: 9, letterSpacing: 2 }}>6-DIGIT PAIRING PIN</div>
+            <div style={{ fontSize: 22, fontWeight: 600, letterSpacing: 5, color: "var(--console-accent-dim)" }}>
               {syncStatus?.pairingCode || "------"}
             </div>
           </div>
-          <div style={{ fontSize: 12, color: "var(--clay-text-muted)", flex: 1 }}>
-            Enter this PIN in the companion app on your phone while connected to the same Wi-Fi network. Port: {syncStatus?.serverPort || 8765}
+          <div className="console-meta" style={{ flex: 1 }}>
+            Enter this PIN in the companion app while on the same Wi-Fi. Port: {syncStatus?.serverPort || 8765}
           </div>
-          <ClayButton variant="ghost" onClick={handleRegenerateCode}>
-            New PIN
-          </ClayButton>
+          <ClayButton variant="ghost" onClick={handleRegenerateCode}>New PIN</ClayButton>
         </div>
       </ClayCard>
     </div>

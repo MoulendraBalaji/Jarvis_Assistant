@@ -19,24 +19,24 @@ export function DailyBriefing() {
   }, []);
 
   return (
-    <ClayCard large>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-        <h2 style={{ margin: 0, fontSize: 18 }}>Daily Briefing</h2>
+    <ClayCard large eyebrow="02 · Daily Briefing">
+      <div className="console-row" style={{ justifyContent: "space-between" }}>
+        <span className="console-meta">{items.length} items · {new Date().toLocaleDateString()}</span>
         <ClayButton variant="ghost" onClick={generate} disabled={loading}>
-          {loading ? "…" : "Regenerate"}
+          {loading ? "refreshing" : "Regenerate"}
         </ClayButton>
       </div>
       {items.length === 0 ? (
-        <p style={{ color: "var(--clay-text-muted)", fontSize: 13 }}>
+        <p className="console-meta" style={{ margin: "10px 0 0" }}>
           Nothing queued yet. Add tasks or connect Classroom to build your morning summary.
         </p>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           {items.map((i, idx) => (
-            <div key={idx} style={{ display: "flex", gap: 10, alignItems: "center", padding: "10px 14px", borderRadius: 16, boxShadow: "var(--clay-shadow-raised-sm)" }}>
-              <span style={{ fontSize: 18 }}>{i.kind === "assignment" ? "📚" : "✅"}</span>
-              <div style={{ flex: 1, fontSize: 14 }}>{i.title}</div>
-              {i.dueAt && <span style={{ fontSize: 12, color: "var(--clay-text-muted)" }}>{new Date(i.dueAt).toLocaleDateString()}</span>}
+            <div key={idx} className="console-row">
+              <span className="console-meta">{i.kind === "assignment" ? "CLS" : "TASK"}</span>
+              <span style={{ flex: 1, fontSize: 13 }}>{i.title}</span>
+              {i.dueAt && <span className="console-count">{new Date(i.dueAt).toLocaleDateString()}</span>}
             </div>
           ))}
         </div>

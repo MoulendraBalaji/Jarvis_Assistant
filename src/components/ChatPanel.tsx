@@ -28,9 +28,8 @@ export function ChatPanel() {
   };
 
   return (
-    <ClayCard large style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <h3 style={{ margin: "0 0 12px", fontSize: 16 }}>Conversation</h3>
-      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 12, paddingRight: 4 }}>
+    <ClayCard large eyebrow="08 · Conversation" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 10, paddingRight: 4 }}>
         {messages.map((m) => (
           <Bubble key={m.id} role={m.role} text={m.text} intent={m.intent} />
         ))}
@@ -38,7 +37,7 @@ export function ChatPanel() {
         <div ref={endRef} />
       </div>
       <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
-        <ClayInput placeholder="Ask JARVIS anything…" value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === "Enter" && submit()} />
+        <ClayInput placeholder="Ask JARVIS anything…  or /screen to analyze the display" value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === "Enter" && submit()} />
         <ClayButton variant="primary" onClick={submit}>Send</ClayButton>
       </div>
     </ClayCard>
@@ -50,19 +49,21 @@ function Bubble({ role, text, intent }: { role: string; text: string; intent?: s
   return (
     <div style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start" }}>
       <div
+        className="console-pre"
         style={{
           maxWidth: "78%",
-          padding: "12px 16px",
-          borderRadius: 20,
-          boxShadow: "var(--clay-shadow-raised-sm)",
-          background: isUser ? "linear-gradient(135deg,#a3b8f7,#c3d0fb)" : "var(--clay-surface)",
-          color: isUser ? "#1f2740" : "var(--clay-text)",
-          fontSize: 14
+          padding: "10px 12px",
+          background: isUser ? "var(--console-accent)" : "var(--console-surface)",
+          color: isUser ? "var(--console-accent-ink)" : "var(--console-text)",
+          border: isUser ? "1px solid var(--console-accent)" : "1px solid var(--console-border)",
+          fontSize: 13
         }}
       >
-        {text}
+        <div style={{ whiteSpace: "pre-wrap" }}>{text}</div>
         {intent && !isUser && (
-          <div style={{ fontSize: 11, color: "var(--clay-text-muted)", marginTop: 6 }}>intent: {intent}</div>
+          <div className="console-meta" style={{ marginTop: 6, color: "var(--console-text-faint)" }}>
+            intent: {intent}
+          </div>
         )}
       </div>
     </div>

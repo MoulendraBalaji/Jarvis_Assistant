@@ -11,9 +11,9 @@ export function ClayCard({
   ...rest
 }: DivProps & { pressed?: boolean; large?: boolean; eyebrow?: string }) {
   const cls = [
-    "clay-card",
-    pressed ? "clay-card--pressed" : "",
-    large ? "clay-card--lg" : ""
+    "console-card",
+    pressed ? "console-card--pressed" : "",
+    large ? "console-card--lg" : ""
   ]
     .filter(Boolean)
     .join(" ");
@@ -32,7 +32,7 @@ export function ClayButton({
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "default" | "primary" | "accent" | "ghost";
 }) {
-  const cls = ["clay-btn", variant !== "default" ? `clay-btn--${variant}` : ""].filter(Boolean).join(" ");
+  const cls = ["console-btn", variant !== "default" ? `console-btn--${variant}` : ""].filter(Boolean).join(" ");
   return (
     <button className={cls} {...rest}>
       {children}
@@ -41,7 +41,7 @@ export function ClayButton({
 }
 
 export function ClayInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input className="clay-input" {...props} />;
+  return <input className="console-input" {...props} />;
 }
 
 export function ClayToggle({
@@ -51,12 +51,12 @@ export function ClayToggle({
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & { on: boolean; onChange: () => void }) {
   return (
     <button
-      className={`clay-toggle ${on ? "clay-toggle--on" : ""}`}
+      className={`console-toggle ${on ? "console-toggle--on" : ""}`}
       onClick={onChange}
       aria-pressed={on}
       {...rest}
     >
-      <span className="clay-toggle__knob" />
+      <span className="console-toggle__knob" />
     </button>
   );
 }
@@ -69,8 +69,8 @@ export function ClayBadge({
   children: React.ReactNode;
 }) {
   return (
-    <span className={`clay-badge clay-badge--${status}`}>
-      <span className="clay-badge__dot" />
+    <span className={`console-badge console-badge--${status}`}>
+      <span className="console-badge__dot" />
       {children}
     </span>
   );
@@ -89,9 +89,9 @@ export function ClayModal({
 }) {
   if (!open) return null;
   return (
-    <div className="clay-modal__backdrop" onClick={onClose}>
-      <div className="clay-modal__panel" onClick={(e) => e.stopPropagation()}>
-        {title && <h3 style={{ margin: "0 0 16px", color: "var(--clay-text)" }}>{title}</h3>}
+    <div className="console-modal__backdrop" onClick={onClose}>
+      <div className="console-modal__panel" onClick={(e) => e.stopPropagation()}>
+        {title && <h3 style={{ margin: "0 0 16px", color: "var(--console-text)" }}>{title}</h3>}
         {children}
       </div>
     </div>
