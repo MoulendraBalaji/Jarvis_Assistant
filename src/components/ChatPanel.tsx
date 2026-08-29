@@ -17,9 +17,14 @@ export function ChatPanel() {
   }, [messages, thinking]);
 
   const submit = () => {
-    if (!text.trim()) return;
-    send(text.trim());
+    const trimmed = text.trim();
+    if (!trimmed) return;
     setText("");
+    if (/^\/screen/i.test(trimmed)) {
+      useChat.getState().sendScreen(trimmed);
+    } else {
+      send(trimmed);
+    }
   };
 
   return (
