@@ -26,3 +26,9 @@ export const useIntegrations = create<IntegrationsState>((set) => ({
     set({ adapters });
   }
 }));
+
+if (typeof window !== "undefined") {
+  jarvis.onEvent("integrations:update", () => {
+    useIntegrations.getState().load();
+  });
+}

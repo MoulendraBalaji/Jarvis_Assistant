@@ -52,8 +52,12 @@ export async function initDb(): Promise<void> {
         id TEXT PRIMARY KEY, text TEXT, embedding TEXT, createdAt INTEGER
       );
     `);
-  } catch {
+  } catch (err) {
     usingNative = false;
+    console.warn(
+      "[DB] better-sqlite3 unavailable; falling back to the JSON store:",
+      err instanceof Error ? err.message : err
+    );
     loadJson();
   }
 }

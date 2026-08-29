@@ -59,6 +59,28 @@ export function registerIpc() {
     );
   });
 
+  // Environment & config health row — intended as an in-app notice for unset keys.
+  const ENV_CHECKS = [
+    { key: "ANTHROPIC_API_KEY", label: "Anthropic" },
+    { key: "GEMINI_API_KEY", label: "Gemini" },
+    { key: "JARVIS_OLLAMA_URL", label: "Ollama" },
+    { key: "PICOVOICE_ACCESS_KEY", label: "Picovoice" }
+  ];
+  const missingEnv = ENV_CHECKS.filter((c) => !process.env[c.key]);
+  healthMonitor.register({
+    id: "env",
+    label: "AI Keys & Voice",
+    description: missingEnv.length
+      ? `Not configured: ${missingEnv.map((c) => c.label).join(", ")}. See .env.example for details.`
+      : "All AI service keys and access keys are configured.",
+    status: missingEnv.length ? "degraded" : "healthy",
+    lastSyncAt: null,
+    category: "config"
+  });
+
+  // Stream health-monitor changes (backend probes, adapter reconnects) to the renderer.
+  healthMonitor.subscribe(() => pushEvent("integrations:update"));
+
   // Voice event listeners
   voice.on("state-change", (state) => pushEvent("voice:state-change", state));
   voice.on("enroll-progress", (p) => pushEvent("voice:enroll-progress", p));

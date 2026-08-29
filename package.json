@@ -20,7 +20,8 @@
     "package:mac": "electron-vite build && electron-builder --mac",
     "package:linux": "electron-vite build && electron-builder --linux",
     "backend:install": "pip install -r backend/requirements.txt",
-    "backend:dev": "python -m uvicorn backend.server:app --host 127.0.0.1 --port 8766 --reload"
+    "backend:dev": "python -m uvicorn backend.server:app --host 127.0.0.1 --port 8766 --reload",
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "chrono-node": "^2.7.6",

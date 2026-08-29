@@ -9,6 +9,7 @@ import { FocusGuardian } from "./components/FocusGuardian";
 import { DailyBriefing } from "./components/DailyBriefing";
 import { ProfileSettings } from "./components/ProfileSettings";
 import { AssignmentFeed } from "./components/AssignmentFeed";
+import { ConfigNotice } from "./components/ConfigNotice";
 import { jarvis } from "./lib/jarvis";
 import { useChat } from "./store/chat";
 import { VoiceState } from "../shared/types";
@@ -66,6 +67,7 @@ export default function App() {
       <div className="app__titlebar">
         <TitleBar />
       </div>
+      <ConfigNotice />
       <div className="app__body">
         <aside className="app__rail">
           <AssistantOrb state={orb} size={84} onActivate={activate} />
