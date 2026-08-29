@@ -7,6 +7,7 @@ interface ChatState {
   thinking: boolean;
   load: () => Promise<void>;
   send: (text: string) => Promise<IntentResult | null>;
+  sendScreen: (command: string) => Promise<void>;
 }
 
 export const useChat = create<ChatState>((set, get) => ({
@@ -35,5 +36,25 @@ export const useChat = create<ChatState>((set, get) => ({
     };
     set({ messages: [...get().messages, assistantMsg], thinking: false });
     return res;
+  },
+  sendScreen: async (command) => {
+    const prompt = command.replace(/^\/screen\s*/i, "").trim() || "Summarize what is currently on screen.";
+    const userMsg: ChatMessage = {
+      id: `u-${Date.now()}`,
+      role: "user",
+      text: `/screen ${prompt}`,
+      createdAt: Date.now()
+    };
+    set({ messages: [...get().messages, userMsg], thinking: true });
+    const description = await jarvis.screen.captureAndDescribe(prompt);
+    const assistantMsg: ChatMessage = {
+      id: `a-${Date.now()}`,
+      role: "assistant",
+      text:
+        description || "I couldn't capture or describe the current screen. Make sure you aren't in a secure/fullscreen context.",
+      intent: "screen.describe",
+      createdAt: Date.now()
+    };
+    set({ messages: [...get().messages, assistantMsg], thinking: false });
   }
 }));

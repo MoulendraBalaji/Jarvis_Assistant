@@ -7,6 +7,8 @@ export interface AdapterState {
   status: AdapterStatus;
   lastSyncAt: number | null;
   errorMessage?: string;
+  /** Groups non-adapter health rows surfaced in the Sources panel (e.g. "system", "config"). */
+  category?: string;
 }
 
 export interface Task {

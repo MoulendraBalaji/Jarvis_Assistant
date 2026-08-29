@@ -21,13 +21,13 @@ extraResources:
       - "!**/__pycache__/**"
       - "!**/*.pyc"
 mac:
-  target: [zip]
+  target: [dmg, zip]
   category: public.app-category.productivity
 win:
   target: [nsis, portable, zip]
   artifactName: JARVIS-${version}-${os}-${arch}.${ext}
 linux:
-  target: [tar.gz, deb, zip]
+  target: [tar.gz, deb, AppImage, zip]
   category: Utility
   maintainer: Jarvis Team
   artifactName: JARVIS-${version}-${os}-${arch}.${ext}

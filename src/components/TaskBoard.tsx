@@ -21,12 +21,12 @@ export function TaskBoard() {
   };
 
   return (
-    <ClayCard large>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <h2 style={{ margin: 0, fontSize: 18 }}>Task Board</h2>
-        <span style={{ color: "var(--clay-text-muted)", fontSize: 13 }}>{tasks.filter((t) => !t.completed).length} open</span>
+    <ClayCard large eyebrow="01 · Task Board">
+      <div className="console-row" style={{ justifyContent: "space-between", marginBottom: 4 }}>
+        <span className="console-meta">{tasks.length} total</span>
+        <span className="console-count">{tasks.filter((t) => !t.completed).length} open</span>
       </div>
-      <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
+      <div style={{ display: "flex", gap: 10, margin: "12px 0" }}>
         <ClayInput
           placeholder="Add a task…  e.g. Submit essay by Friday"
           value={title}
@@ -35,23 +35,22 @@ export function TaskBoard() {
         />
         <ClayButton variant="primary" onClick={submit}>Add</ClayButton>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 10, maxHeight: 320, overflowY: "auto" }}>
+      <div style={{ display: "flex", flexDirection: "column", maxHeight: 320, overflowY: "auto" }}>
         {tasks.length === 0 && (
-          <p style={{ color: "var(--clay-text-muted)", fontSize: 13 }}>
-            No tasks yet. Try the chat: “remind me to call mom tomorrow”.
+          <p className="console-meta" style={{ margin: "8px 0" }}>
+            No tasks yet. Try the chat: "remind me to call mom tomorrow".
           </p>
         )}
         {tasks.map((t) => (
-          <div
-            key={t.id}
-            style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 14px", borderRadius: 16, boxShadow: "var(--clay-shadow-raised-sm)" }}
-          >
-            <input type="checkbox" checked={!!t.completed} onChange={() => toggle(t.id)} style={{ accentColor: "#8aa0f0", width: 18, height: 18 }} />
+          <div key={t.id} className="console-row">
+            <input type="checkbox" checked={!!t.completed} onChange={() => toggle(t.id)} className="console-checkbox" />
             <div style={{ flex: 1 }}>
-              <div style={{ textDecoration: t.completed ? "line-through" : "none", color: t.completed ? "var(--clay-text-muted)" : "var(--clay-text)" }}>{t.title}</div>
-              {t.dueAt && <div style={{ fontSize: 12, color: "var(--clay-text-muted)" }}>{new Date(t.dueAt).toLocaleString()}</div>}
+              <div style={{ textDecoration: t.completed ? "line-through" : "none", color: t.completed ? "var(--console-text-muted)" : "var(--console-text)" }}>
+                {t.title}
+              </div>
+              {t.dueAt && <div className="console-meta">{new Date(t.dueAt).toLocaleString()}</div>}
             </div>
-            <button onClick={() => remove(t.id)} style={{ border: "none", background: "transparent", color: "var(--clay-text-muted)", cursor: "pointer" }}>✕</button>
+            <button className="console-delete" onClick={() => remove(t.id)} aria-label="Delete task">✕</button>
           </div>
         ))}
       </div>

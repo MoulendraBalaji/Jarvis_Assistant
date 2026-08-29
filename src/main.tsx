@@ -36,25 +36,20 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
           alignItems: "center",
           justifyContent: "center",
           padding: 24,
-          backgroundColor: "#e8ecf3",
-          color: "#3b4256",
-          fontFamily: "system-ui, sans-serif"
+          backgroundColor: "var(--console-bg)",
+          color: "var(--console-text)",
+          fontFamily: "var(--console-font-mono)"
         }}>
-          <h2 style={{ margin: "0 0 8px" }}>JARVIS Encountered an Error</h2>
-          <p style={{ margin: "0 0 16px", color: "#7c8399", fontSize: 14 }}>
+          <h2 style={{ margin: "0 0 8px", fontSize: 14, letterSpacing: 3, textTransform: "uppercase", color: "var(--console-accent-dim)" }}>
+            JARVIS Encountered an Error
+          </h2>
+          <p style={{ margin: "0 0 16px", color: "var(--console-text-muted)", fontSize: 12 }}>
             {this.state.error?.message || "An unexpected error occurred."}
           </p>
           <button
             onClick={() => window.location.reload()}
-            style={{
-              padding: "10px 20px",
-              borderRadius: 12,
-              border: "none",
-              backgroundColor: "#a3b8f7",
-              color: "#1f2740",
-              fontWeight: 600,
-              cursor: "pointer"
-            }}
+            className="console-btn console-btn--primary"
+            style={{ padding: "10px 20px" }}
           >
             Reload Application
           </button>
