@@ -21,7 +21,7 @@ extraResources:
       - "!**/__pycache__/**"
       - "!**/*.pyc"
 mac:
-  target: [zip]
+  target: [dmg, zip]
   category: public.app-category.productivity
 win:
   target: [nsis, portable, zip]
