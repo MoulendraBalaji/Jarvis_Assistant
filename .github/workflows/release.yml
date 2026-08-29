@@ -61,9 +61,7 @@ jobs:
         run: npm ci
 
       - name: Package app
-        run: npm run ${{ matrix.script }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run ${{ matrix.script }} -- --publish never
 
       - name: Rename Windows installer
         if: matrix.os == 'windows-latest'
