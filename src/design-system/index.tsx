@@ -6,9 +6,10 @@ type DivProps = React.HTMLAttributes<HTMLDivElement>;
 export function ClayCard({
   pressed,
   large,
+  eyebrow,
   children,
   ...rest
-}: DivProps & { pressed?: boolean; large?: boolean }) {
+}: DivProps & { pressed?: boolean; large?: boolean; eyebrow?: string }) {
   const cls = [
     "clay-card",
     pressed ? "clay-card--pressed" : "",
@@ -18,6 +19,7 @@ export function ClayCard({
     .join(" ");
   return (
     <div className={cls} {...rest}>
+      {eyebrow && <div className="console-eyebrow">{eyebrow}</div>}
       {children}
     </div>
   );
