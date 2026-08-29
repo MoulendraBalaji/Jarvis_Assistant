@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { useIntegrations } from "../store/integrations";
+import { useUI } from "../store/ui";
 import { AdapterState } from "../../shared/types";
 
 export function ConfigNotice() {
   const { adapters, load } = useIntegrations();
+  const setView = useUI((s) => s.setView);
 
   useEffect(() => {
     load();
@@ -20,7 +22,9 @@ export function ConfigNotice() {
       <span className="console-config-notice__text">
         {detail || "Some AI service keys are not configured."}
       </span>
-      <span className="console-config-notice__hint">set them in .env — see Sources</span>
+      <button className="console-config-notice__action" onClick={() => setView("integrations")}>
+        View sources →
+      </button>
     </div>
   );
 }

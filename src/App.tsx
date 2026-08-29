@@ -12,11 +12,11 @@ import { AssignmentFeed } from "./components/AssignmentFeed";
 import { ConfigNotice } from "./components/ConfigNotice";
 import { RecallPanel } from "./components/RecallPanel";
 import { ScreenContext } from "./components/ScreenContext";
+import { CommandPalette } from "./components/CommandPalette";
 import { jarvis } from "./lib/jarvis";
 import { useChat } from "./store/chat";
+import { useUI, View } from "./store/ui";
 import { VoiceState } from "../shared/types";
-
-type View = "briefing" | "tasks" | "chat" | "recall" | "screen" | "integrations" | "focus" | "profile";
 
 const NAV: { id: View; label: string; icon: string }[] = [
   { id: "briefing", label: "Briefing", icon: "\u2600\uFE0F" },
@@ -30,7 +30,8 @@ const NAV: { id: View; label: string; icon: string }[] = [
 ];
 
 export default function App() {
-  const [view, setView] = useState<View>("briefing");
+  const view = useUI((s) => s.view);
+  const setView = useUI((s) => s.setView);
   const [orb, setOrb] = useState<OrbState>("idle");
   const send = useChat((s) => s.send);
 
@@ -140,6 +141,7 @@ export default function App() {
           )}
         </main>
       </div>
+      <CommandPalette />
     </div>
   );
 }
