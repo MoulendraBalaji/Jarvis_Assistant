@@ -10,16 +10,18 @@ import { DailyBriefing } from "./components/DailyBriefing";
 import { ProfileSettings } from "./components/ProfileSettings";
 import { AssignmentFeed } from "./components/AssignmentFeed";
 import { ConfigNotice } from "./components/ConfigNotice";
+import { RecallPanel } from "./components/RecallPanel";
 import { jarvis } from "./lib/jarvis";
 import { useChat } from "./store/chat";
 import { VoiceState } from "../shared/types";
 
-type View = "briefing" | "tasks" | "chat" | "integrations" | "focus" | "profile";
+type View = "briefing" | "tasks" | "chat" | "recall" | "integrations" | "focus" | "profile";
 
 const NAV: { id: View; label: string; icon: string }[] = [
   { id: "briefing", label: "Briefing", icon: "\u2600\uFE0F" },
   { id: "tasks", label: "Tasks", icon: "\u2705" },
   { id: "chat", label: "Chat", icon: "\uD83D\uDCAC" },
+  { id: "recall", label: "Recall", icon: "\uD83E\uDDF5" },
   { id: "integrations", label: "Sources", icon: "\uD83D\uDD0C" },
   { id: "focus", label: "Focus", icon: "\uD83C\uDFAF" },
   { id: "profile", label: "Profile", icon: "\uD83E\uDDE0" }
@@ -106,6 +108,11 @@ export default function App() {
           {view === "chat" && (
             <div className="app__grid app__grid--single">
               <ChatPanel />
+            </div>
+          )}
+          {view === "recall" && (
+            <div className="app__grid app__grid--single">
+              <RecallPanel />
             </div>
           )}
           {view === "integrations" && (
